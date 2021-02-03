@@ -3,7 +3,7 @@ import { todoListModel } from '../schemas';
 
 // 获取文件列表
 export function getTodoList(req: any, res: any, next: any) {
-    let { current, size } = req.query;
+    let { current = 1, size = 10 } = req.query;
     let end = current * size;
     let start = end - size;
     todoListModel.find({}, (err: any, todoList: any) => {

@@ -5,7 +5,7 @@ const DBURL = 'mongodb://127.0.0.1:27017';
 
 mongoose.connect(
     // 连接mongodb
-    `${DBURL}/admin`,
+    `${DBURL}/todolist`,
     { useUnifiedTopology: true, useNewUrlParser: true },
     () => console.log("mongodb连接成功")
 );

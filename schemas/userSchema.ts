@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
-    nickName: String,
+    nickname: String,
     homeTown: String,
     role: {
         type: String,
