@@ -4,6 +4,7 @@ import { PRIVATE_KEY } from './constant' // 引入自定义的jwt密钥
 
 // 验证token是否过期
 export const jwtAuth = expressJwt({
+    algorithms: [],
     // 设置密钥
     secret: PRIVATE_KEY,
     // 设置为 true 表示校验，设置为 false 表示不校验
