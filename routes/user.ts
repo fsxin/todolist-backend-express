@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { body } from 'express-validator';
-import { login, register } from '../services/userService';
+import { login, register } from '../services/user/userService';
 
 const router = express.Router();
 

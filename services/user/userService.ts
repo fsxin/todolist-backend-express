@@ -1,12 +1,12 @@
-import md5 from '../utils/md5';
+import md5 from '../../utils/md5';
 import * as jwt from 'jsonwebtoken';
 import * as boom from 'boom';
 import { validationResult } from 'express-validator';
-import { CODE_ERROR, CODE_SUCCESS, PRIVATE_KEY, JWT_EXPIRED } from '../utils/constant';
-import { userModel } from '../schemas';
+import { CODE_ERROR, CODE_SUCCESS, PRIVATE_KEY, JWT_EXPIRED } from '../../utils/constant';
+import { findOneUser, saveUser } from './userSchema';
 
 // 登录
-export function login(req: any, res: any, next: any) {
+export async function login(req: any, res: any, next: any) {
     const err: any = validationResult(req);
     // 如果验证错误，empty 不为空
     if (!err.isEmpty()) {
@@ -15,39 +15,21 @@ export function login(req: any, res: any, next: any) {
         // 抛出错误，交给我们自定义的统一异常处理程序进行错误返回 
         next(boom.badRequest(msg));
     } else {
-        let { username, password } = req.body;
-        // md5 加密
-        password = md5(password);
-        userModel.find({ username, password }, (err: any, user: any) => {
-            if (err) {
-                res.json({
-                    code: CODE_ERROR,
-                    msg: err,
-                    data: null
-                });
-                return;
-            }
-            if (user && user.length) {
-                // 登录成功，签发一个token并返回给前端
+        try {
+            let { username, password } = req.body;
+            password = md5(password);
+            let users: any = await findOneUser({ username, password });
+            console.log(users);
+            if (users?.length > 0) {
                 const token = jwt.sign(
-                    // payload：签发的 token 里面要包含的一些数据。
                     { username },
-                    // 私钥
                     PRIVATE_KEY,
-                    // 设置过期时间
                     { expiresIn: JWT_EXPIRED }
                 );
-
                 let userData = {
-                    id: user[0].id,
-                    username: user[0].username,
-                    // nickname: user[0].nickname,
-                    // avator: user[0].avator,
-                    // sex: user[0].sex,
-                    // gmt_create: user[0].gmt_create,
-                    // gmt_modify: user[0].gmt_modify
+                    id: users[0].id,
+                    username: users[0].username
                 };
-
                 res.json({
                     code: CODE_SUCCESS,
                     msg: '登录成功',
@@ -63,12 +45,18 @@ export function login(req: any, res: any, next: any) {
                     data: null
                 })
             }
-        });
+        } catch(e) {
+            res.json({
+                code: CODE_ERROR,
+                msg: e,
+                data: null
+            })
+        }
     }
 }
 
 // 注册
-export function register(req: any, res: any, next: any) {
+export async function register(req: any, res: any, next: any) {
     const err: any = validationResult(req);
     if (!err.isEmpty()) {
         const [{ msg }] = err.errors;
@@ -83,16 +71,9 @@ export function register(req: any, res: any, next: any) {
             })
             return;
         }
-        userModel.find({ username }, (err: any, docs: any) => {
-            if (err) {
-                res.json({
-                    code: CODE_ERROR,
-                    msg: '注册失败',
-                    data: null
-                })
-                return;
-            }
-            if (docs && docs.length) {
+        try {
+            let users: any = await findOneUser({ username });
+            if (users?.length > 0) {
                 res.json({
                     code: CODE_ERROR,
                     msg: '用户已存在',
@@ -100,24 +81,20 @@ export function register(req: any, res: any, next: any) {
                 });
             } else {
                 password = md5(password);
-                const newUser = new userModel({ username, password });
-                newUser.save((err: any, docs: any) => {
-                    if (err) {
-                        res.json({
-                            code: CODE_ERROR,
-                            msg: '注册失败',
-                            data: null
-                        })
-                        return;
-                    }
-                    res.json({
-                        code: CODE_SUCCESS,
-                        msg: '注册成功',
-                        data: null,
-                    });
+                await saveUser({ username, password });
+                res.json({
+                    code: CODE_SUCCESS,
+                    msg: '注册成功',
+                    data: null,
                 });
             }
-        });
+        } catch (e) {
+            res.json({
+                code: CODE_ERROR,
+                msg: e,
+                data: null
+            })
+        }
     }
 }
 
