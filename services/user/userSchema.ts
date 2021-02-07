@@ -26,11 +26,22 @@ const UserSchema = new mongoose.Schema({
 
 const UserModel = mongoose.model('User', UserSchema, 'user');
 
-export function findOneUser(userParam: any) {
+export interface IUser {
+    username: string;
+    password?: string;
+    nickname?: string;
+    homeTown?: string;
+    role?: string;
+    age?: number;
+    sex?: string;
+    address?: string;
+}
+
+export function findOneUser(userParam: IUser): Promise<IUser[]> {
     return new Promise((resolve, reject) => {
-        UserModel.find(userParam, (err: any, user: any) => {
-            if (err) {
-                reject(err);
+        UserModel.find(userParam, (error: any, user: any) => {
+            if (error) {
+                reject(error);
             } else {
                 resolve(user);
             }
@@ -38,15 +49,14 @@ export function findOneUser(userParam: any) {
     });
 }
 
-export function saveUser(user: any) {
+export function saveUser(user: any) : Promise<void> {
     return new Promise((resolve, reject) => {
         const newUser = new UserModel({...user});
-        newUser.save((err: any, docs: any) => {
-            if (err) {
-                console.log(err);
-                reject(err);
+        newUser.save((error: any, docs: any) => {
+            if (error) {
+                reject(error);
             } else {
-                resolve('成功');
+                resolve();
             }
         });
     });

@@ -3,22 +3,22 @@ import * as jwt from 'jsonwebtoken';
 import * as boom from 'boom';
 import { validationResult } from 'express-validator';
 import { CODE_ERROR, CODE_SUCCESS, PRIVATE_KEY, JWT_EXPIRED } from '../../utils/constant';
-import { findOneUser, saveUser } from './userSchema';
+import { IUser, findOneUser, saveUser } from './userSchema';
 
 // 登录
 export async function login(req: any, res: any, next: any) {
-    const err: any = validationResult(req);
+    const error: any = validationResult(req);
     // 如果验证错误，empty 不为空
-    if (!err.isEmpty()) {
+    if (!error.isEmpty()) {
         // 获取错误信息
-        const [{ msg }] = err.errors;
+        const [{ msg }] = error.errors;
         // 抛出错误，交给我们自定义的统一异常处理程序进行错误返回 
         next(boom.badRequest(msg));
     } else {
         try {
             let { username, password } = req.body;
             password = md5(password);
-            let users: any = await findOneUser({ username, password });
+            let users: Array<IUser> = await findOneUser({ username, password });
             console.log(users);
             if (users?.length > 0) {
                 const token = jwt.sign(
@@ -27,7 +27,6 @@ export async function login(req: any, res: any, next: any) {
                     { expiresIn: JWT_EXPIRED }
                 );
                 let userData = {
-                    id: users[0].id,
                     username: users[0].username
                 };
                 res.json({
@@ -57,9 +56,9 @@ export async function login(req: any, res: any, next: any) {
 
 // 注册
 export async function register(req: any, res: any, next: any) {
-    const err: any = validationResult(req);
-    if (!err.isEmpty()) {
-        const [{ msg }] = err.errors;
+    const error: any = validationResult(req);
+    if (!error.isEmpty()) {
+        const [{ msg }] = error.errors;
         next(boom.badRequest(msg));
     } else {
         let { username, password, confirmPassword } = req.body;
@@ -69,10 +68,9 @@ export async function register(req: any, res: any, next: any) {
                 msg: '密码与确认密码不一致',
                 data: null
             })
-            return;
         }
         try {
-            let users: any = await findOneUser({ username });
+            let users: Array<IUser> = await findOneUser({ username });
             if (users?.length > 0) {
                 res.json({
                     code: CODE_ERROR,
@@ -100,9 +98,9 @@ export async function register(req: any, res: any, next: any) {
 
 // 重置密码
 // function resetPwd(req, res, next) {
-//     const err = validationResult(req);
-//     if (!err.isEmpty()) {
-//         const [{ msg }] = err.errors;
+//     const error = validationResult(req);
+//     if (!error.isEmpty()) {
+//         const [{ msg }] = error.errors;
 //         next(boom.badRequest(msg));
 //     } else {
 //         let { username, oldPassword, newPassword } = req.body;

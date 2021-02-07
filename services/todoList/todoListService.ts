@@ -1,10 +1,10 @@
 import { CODE_ERROR, CODE_SUCCESS } from '../../utils/constant';
-import { getAll, getTodoItemByName, saveTodoItem } from './todoListSchema';
+import { ITodoItem, getAll, getTodoItemByName, saveTodoItem } from './todoListSchema';
 
 // 获取代办事项列表
 export async function getTodoList(req: any, res: any, next: any) {
     try {
-        let todoList: any = await getAll();
+        let todoList: ITodoItem[] = await getAll();
         let { current = 1, size = 10 } = req.query;
         let end = current * size;
         let start = end - size;
@@ -16,10 +16,10 @@ export async function getTodoList(req: any, res: any, next: any) {
                 totalCount: todoList.length
             }
         });
-    } catch(e: any) {
+    } catch(e) {
         res.json({
             code: CODE_ERROR,
-            msg: e.err,
+            msg: e,
             data: null
         });
     };
@@ -29,14 +29,13 @@ export async function getTodoList(req: any, res: any, next: any) {
 export async function saveTodoList(req: any, res: any, next: any) {
     let { name, content } = req.body;
     try {
-        let todoItem: any = await getTodoItemByName(name);
+        let todoItem: ITodoItem[] = await getTodoItemByName(name);
         if (todoItem?.length > 0) {
             res.json({
                 code: CODE_ERROR,
                 msg: '名称重复',
                 data: null
             })
-            return;
         } else {
             await saveTodoItem({ name, content });
             res.json({
@@ -48,7 +47,7 @@ export async function saveTodoList(req: any, res: any, next: any) {
     } catch(e) {
         res.json({
             code: CODE_ERROR,
-            msg: e.err,
+            msg: e,
             data: null
         });
     }
