@@ -19,7 +19,6 @@ export async function login(req: any, res: any, next: any) {
             let { username, password } = req.body;
             password = md5(password);
             let users: Array<IUser> = await findOneUser({ username, password });
-            console.log(users);
             if (users?.length > 0) {
                 const token = jwt.sign(
                     { username },

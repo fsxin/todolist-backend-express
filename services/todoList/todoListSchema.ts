@@ -16,6 +16,7 @@ const ToDoListSchema = new mongoose.Schema({
 const todoListModel = mongoose.model('TodoList', ToDoListSchema, 'todolist');
 
 export interface ITodoItem {
+    _id?: string;
     name: string;
     content?: string;
     finishTime?: number;
@@ -44,8 +45,8 @@ export function getTodoItemByName(name: string): Promise<ITodoItem[]> {
             } else {
                 resolve(todoItem);
             }
-        })
-    })
+        });
+    });
 }
 
 // 保存代办事项
@@ -59,5 +60,53 @@ export function saveTodoItem(item: any): Promise<void> {
                 resolve();
             }
         });
+    });
+}
+
+// 根据id获取代办事项
+export function getTodoItemById(id: string): Promise<ITodoItem[]> {
+    return new Promise((resolve, reject) => {
+        todoListModel.find({ _id: id }, (error: any, todoItem: any) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(todoItem);
+            }
+        });
+    });
+}
+
+// 修改待办事项
+export function updateTodoItem(item: ITodoItem): Promise<ITodoItem[]> {
+    return new Promise((resolve, reject) => {
+        todoListModel.updateOne(
+            { _id: item._id }, 
+            { ...item }, 
+            null,
+            (error: any, todoItem: any) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(todoItem);
+                }
+            }
+        )
+    });
+}
+
+// 删除代办事项
+export function deleteTodoItemById(id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        todoListModel.deleteOne(
+            { _id: id }, 
+            null, 
+            (error: any) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            }
+        );
     });
 }

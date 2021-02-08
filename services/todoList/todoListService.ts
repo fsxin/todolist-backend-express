@@ -1,5 +1,5 @@
 import { CODE_ERROR, CODE_SUCCESS } from '../../utils/constant';
-import { ITodoItem, getAll, getTodoItemByName, saveTodoItem } from './todoListSchema';
+import { ITodoItem, getAll, getTodoItemByName, saveTodoItem, getTodoItemById, updateTodoItem, deleteTodoItemById } from './todoListSchema';
 
 // 获取代办事项列表
 export async function getTodoList(req: any, res: any, next: any) {
@@ -44,6 +44,51 @@ export async function saveTodoList(req: any, res: any, next: any) {
                 data: null,
             });
         }
+    } catch(e) {
+        res.json({
+            code: CODE_ERROR,
+            msg: e,
+            data: null
+        });
+    }
+}
+
+export async function updateTodoList(req: any, res: any, next: any) {
+    let { _id, name, content } = req.body;
+    try {
+        let todoItem: ITodoItem[] = await getTodoItemById(_id);
+        if (todoItem?.length > 0) {
+            await updateTodoItem({ _id, name, content });
+            res.json({
+                code: CODE_SUCCESS,
+                msg: '修改成功',
+                data: null,
+            });
+        } else {
+            res.json({
+                code: CODE_ERROR,
+                msg: '代办事项不存在',
+                data: null
+            })
+        }
+    } catch(e) {
+        res.json({
+            code: CODE_ERROR,
+            msg: e,
+            data: null
+        });
+    }
+}
+
+export async function deleteTodoList(req: any, res: any, next: any) {
+    let { _id } = req.body;
+    try {
+        await deleteTodoItemById( _id);
+        res.json({
+            code: CODE_SUCCESS,
+            msg: '删除成功',
+            data: null,
+        });
     } catch(e) {
         res.json({
             code: CODE_ERROR,

@@ -11,8 +11,6 @@ router.use('/api/todolist', todoListRouter);
 
 // 自定义统一的异常处理中间件，需要放到代码最后
 router.use((err: any, req: any, res: any, next: any) => {
-    // 自定义用户认证失败的错误返回
-    console.log('err===', err);
     if (err && err.name === 'UnauthorizedError') {
         const { status = 401, message } = err;
         // 抛出401异常
