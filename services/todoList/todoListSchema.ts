@@ -9,18 +9,22 @@ const ToDoListSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    createTime: Number,
+    isFinished: Boolean,
     finishTime: Number,
-    createTime: Number
+    updateTime: Number,
 })
 
 const todoListModel = mongoose.model('TodoList', ToDoListSchema, 'todolist');
 
 export interface ITodoItem {
     _id?: string;
-    name: string;
+    name?: string;
     content?: string;
-    finishTime?: number;
     createTime?: number;
+    isFinished?: boolean,
+    finishTime?: number;
+    updateTime?: number;
 }
 
 // 获取所有代办事项
@@ -52,7 +56,13 @@ export function getTodoItemByName(name: string): Promise<ITodoItem[]> {
 // 保存代办事项
 export function saveTodoItem(item: any): Promise<void> {
     return new Promise((resolve, reject) => {
-        const newTodoList = new todoListModel({...item});
+        const newTodoList = new todoListModel({
+            ...item, 
+            createTime: new Date().getTime(),
+            isFinished: false,
+            finishTime: 0,
+            updateTime: new Date().getTime()
+        });
         newTodoList.save((error: any, docs: any) => {
             if (error) {
                 reject(error);
@@ -81,7 +91,7 @@ export function updateTodoItem(item: ITodoItem): Promise<ITodoItem[]> {
     return new Promise((resolve, reject) => {
         todoListModel.updateOne(
             { _id: item._id }, 
-            { ...item }, 
+            { ...item, updateTime: new Date().getTime() }, 
             null,
             (error: any, todoItem: any) => {
                 if (error) {

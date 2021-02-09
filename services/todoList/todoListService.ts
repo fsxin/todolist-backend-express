@@ -54,11 +54,15 @@ export async function saveTodoList(req: any, res: any, next: any) {
 }
 
 export async function updateTodoList(req: any, res: any, next: any) {
-    let { _id, name, content } = req.body;
+    let { _id, name, isFinished, content } = req.body;
     try {
         let todoItem: ITodoItem[] = await getTodoItemById(_id);
         if (todoItem?.length > 0) {
-            await updateTodoItem({ _id, name, content });
+            if (isFinished) {
+                await updateTodoItem({ _id, isFinished, finishTime: new Date().getTime()});
+            } else {
+                await updateTodoItem({ _id, name, content });
+            }
             res.json({
                 code: CODE_SUCCESS,
                 msg: '修改成功',
