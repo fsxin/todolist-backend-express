@@ -2,7 +2,7 @@ import md5 from '../../utils/md5';
 import * as jwt from 'jsonwebtoken';
 import * as boom from 'boom';
 import { validationResult } from 'express-validator';
-import { CODE_ERROR, CODE_SUCCESS, PRIVATE_KEY, JWT_EXPIRED } from '../../utils/constant';
+import { RESPONSE_CODE, PRIVATE_KEY, JWT_EXPIRED } from '../../utils/constant';
 import { IUser, findOneUser, saveUser } from './userSchema';
 
 // 登录
@@ -29,7 +29,7 @@ export async function login(req: any, res: any, next: any) {
                     username: users[0].username
                 };
                 res.json({
-                    code: CODE_SUCCESS,
+                    code: RESPONSE_CODE.SUCCESS,
                     msg: '登录成功',
                     data: {
                         token,
@@ -38,14 +38,14 @@ export async function login(req: any, res: any, next: any) {
                 });
             } else {
                 res.json({
-                    code: CODE_ERROR,
+                    code: RESPONSE_CODE.ERROR,
                     msg: '用户名或密码错误',
                     data: null
                 })
             }
         } catch(e) {
             res.json({
-                code: CODE_ERROR,
+                code: RESPONSE_CODE.ERROR,
                 msg: e,
                 data: null
             })
@@ -63,7 +63,7 @@ export async function register(req: any, res: any, next: any) {
         let { username, password, confirmPassword } = req.body;
         if (password !== confirmPassword) {
             res.json({
-                code: CODE_ERROR,
+                code: RESPONSE_CODE.ERROR,
                 msg: '密码与确认密码不一致',
                 data: null
             })
@@ -72,7 +72,7 @@ export async function register(req: any, res: any, next: any) {
             let users: Array<IUser> = await findOneUser({ username });
             if (users?.length > 0) {
                 res.json({
-                    code: CODE_ERROR,
+                    code: RESPONSE_CODE.ERROR,
                     msg: '用户已存在',
                     data: null
                 });
@@ -80,14 +80,14 @@ export async function register(req: any, res: any, next: any) {
                 password = md5(password);
                 await saveUser({ username, password });
                 res.json({
-                    code: CODE_SUCCESS,
+                    code: RESPONSE_CODE.SUCCESS,
                     msg: '注册成功',
                     data: null,
                 });
             }
         } catch (e) {
             res.json({
-                code: CODE_ERROR,
+                code: RESPONSE_CODE.ERROR,
                 msg: e,
                 data: null
             })
@@ -112,13 +112,13 @@ export async function register(req: any, res: any, next: any) {
 //                     querySql(query).then(user => {
 //                         if (!user || user.length === 0) {
 //                             res.json({ 
-//                                 code: CODE_ERROR, 
+//                                 code: ERROR, 
 //                                 msg: '重置密码失败', 
 //                                 data: null 
 //                             });
 //                         } else {
 //                             res.json({ 
-//                                 code: CODE_SUCCESS, 
+//                                 code: SUCCESS, 
 //                                 msg: '重置密码成功', 
 //                                 data: null
 //                             });
@@ -126,14 +126,14 @@ export async function register(req: any, res: any, next: any) {
 //                     });
 //                 } else {
 //                     res.json({ 
-//                         code: CODE_ERROR, 
+//                         code: ERROR, 
 //                         msg: '新密码不能为空', 
 //                         data: null 
 //                     });
 //                 }
 //             } else {
 //                 res.json({ 
-//                     code: CODE_ERROR, 
+//                     code: ERROR, 
 //                     msg: '用户名或旧密码错误', 
 //                     data: null 
 //                 });

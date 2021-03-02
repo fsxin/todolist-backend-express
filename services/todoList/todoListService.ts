@@ -1,4 +1,4 @@
-import { CODE_ERROR, CODE_SUCCESS } from '../../utils/constant';
+import { RESPONSE_CODE } from '../../utils/constant';
 import { ITodoItem, getAll, getTodoItemByName, saveTodoItem, getTodoItemById, updateTodoItem, deleteTodoItemById } from './todoListSchema';
 
 // 获取代办事项列表
@@ -10,7 +10,7 @@ export async function getTodoList(req: any, res: any, next: any) {
         let start = end - size;
         let todoListResult = todoList.slice(start, end);
         res.json({
-            code: CODE_SUCCESS,
+            code: RESPONSE_CODE.SUCCESS,
             data: {
                 todoList: todoListResult,
                 totalCount: todoList.length
@@ -18,7 +18,7 @@ export async function getTodoList(req: any, res: any, next: any) {
         });
     } catch(e) {
         res.json({
-            code: CODE_ERROR,
+            code: RESPONSE_CODE.ERROR,
             msg: e,
             data: null
         });
@@ -32,21 +32,21 @@ export async function saveTodoList(req: any, res: any, next: any) {
         let todoItem: ITodoItem[] = await getTodoItemByName(name);
         if (todoItem?.length > 0) {
             res.json({
-                code: CODE_ERROR,
+                code: RESPONSE_CODE.ERROR,
                 msg: '名称重复',
                 data: null
             })
         } else {
             await saveTodoItem({ name, content });
             res.json({
-                code: CODE_SUCCESS,
+                code: RESPONSE_CODE.SUCCESS,
                 msg: '保存成功',
                 data: null,
             });
         }
     } catch(e) {
         res.json({
-            code: CODE_ERROR,
+            code: RESPONSE_CODE.ERROR,
             msg: e,
             data: null
         });
@@ -64,20 +64,20 @@ export async function updateTodoList(req: any, res: any, next: any) {
                 await updateTodoItem({ _id, name, content });
             }
             res.json({
-                code: CODE_SUCCESS,
+                code: RESPONSE_CODE.SUCCESS,
                 msg: '修改成功',
                 data: null,
             });
         } else {
             res.json({
-                code: CODE_ERROR,
+                code: RESPONSE_CODE.ERROR,
                 msg: '代办事项不存在',
                 data: null
             })
         }
     } catch(e) {
         res.json({
-            code: CODE_ERROR,
+            code: RESPONSE_CODE.ERROR,
             msg: e,
             data: null
         });
@@ -89,13 +89,13 @@ export async function deleteTodoList(req: any, res: any, next: any) {
     try {
         await deleteTodoItemById( _id);
         res.json({
-            code: CODE_SUCCESS,
+            code: RESPONSE_CODE.SUCCESS,
             msg: '删除成功',
             data: null,
         });
     } catch(e) {
         res.json({
-            code: CODE_ERROR,
+            code: RESPONSE_CODE.ERROR,
             msg: e,
             data: null
         });
