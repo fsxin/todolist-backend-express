@@ -3,6 +3,7 @@ import { ITodoItem, getAll, getTodoItemByName, saveTodoItem, getTodoItemById, up
 
 // 获取代办事项列表
 export async function getTodoList(req: any, res: any, next: any) {
+    console.log(req);
     try {
         let todoList: ITodoItem[] = await getAll();
         let { current = 1, size = 10 } = req.query;

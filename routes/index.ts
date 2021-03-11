@@ -1,6 +1,7 @@
 import * as express from 'express';
 import userRouter from './user';
 import todoListRouter from './todoList';
+import settingRouter from './setting';
 import { jwtAuth } from '../utils/user-jwt'; // 引入jwt认证函数
 const router = express.Router(); // 注册路由 
 
@@ -8,6 +9,7 @@ router.use(jwtAuth); // 注入认证模块
 
 router.use('/api/user', userRouter); // 注入 user 路由模块
 router.use('/api/todolist', todoListRouter); 
+router.use('/api/setting', settingRouter); 
 
 // 自定义统一的异常处理中间件，需要放到代码最后
 router.use((err: any, req: any, res: any, next: any) => {
