@@ -36,7 +36,7 @@ export async function login(req: any, res: any, next: any) {
         });
       } else {
         res.json({
-          code: RESPONSE_CODE.ERROR,
+          code: RESPONSE_CODE.LOGIN_ERROR,
           msg: "用户名或密码错误",
           data: null,
         });
@@ -61,7 +61,7 @@ export async function register(req: any, res: any, next: any) {
     let { username, password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
       res.json({
-        code: RESPONSE_CODE.ERROR,
+        code: RESPONSE_CODE.PASSWORK_INCONFORMITY,
         msg: "密码与确认密码不一致",
         data: null,
       });
@@ -70,7 +70,7 @@ export async function register(req: any, res: any, next: any) {
       let users: Array<IUser> = await findOneUser({ username });
       if (users?.length > 0) {
         res.json({
-          code: RESPONSE_CODE.ERROR,
+          code: RESPONSE_CODE.EXIST,
           msg: "用户已存在",
           data: null,
         });
