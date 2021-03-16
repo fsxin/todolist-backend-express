@@ -30,13 +30,16 @@ export interface ITodoItem {
 // 获取所有代办事项
 export function getAll(): Promise<ITodoItem[]> {
   return new Promise((resolve, reject) => {
-    todoListModel.find({}, (error: any, todoList: any) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(todoList);
-      }
-    });
+    todoListModel
+      .find()
+      .sort("-updateTime")
+      .exec((error: any, todoList: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(todoList);
+        }
+      });
   });
 }
 
@@ -89,7 +92,7 @@ export function updateTodoItem(item: ITodoItem): Promise<ITodoItem[]> {
   return new Promise((resolve, reject) => {
     todoListModel.updateOne(
       { _id: item._id },
-      { ...item },
+      { ...item, updateTime: new Date() },
       null,
       (error: any, todoItem: any) => {
         if (error) {

@@ -22,6 +22,8 @@ const UserSchema = new mongoose.Schema({
     enum: ["man", "woman"],
   },
   address: String,
+  createTime: { type: Date, default: Date.now },
+  updateTime: { type: Date, default: Date.now },
 });
 
 const UserModel = mongoose.model("User", UserSchema, "user");
