@@ -1,16 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-let rootPath = ".";
-let includeExts = [".html", ".js", ".ts"];
-let exportDirectory = ["./node_modules", "./dist"];
-let exportFiles = ["./codenumber.ts", "./dist/app.js"];
+import fs from 'fs';
+import path from 'path';
+let rootPath = '.';
+let includeExts = ['.html', '.js', '.ts'];
+let exportDirectory = ['./node_modules', './dist'];
+let exportFiles = ['./codenumber.ts', './dist/app.js'];
 let totalNum = 0;
 
 // 获取行数
 async function getLine(path) {
   let rep = await fs.readFileSync(path);
   rep = rep.toString();
-  const lines = rep.split("\n");
+  const lines = rep.split('\n');
   console.log(`${path}  ${lines.length}`);
   totalNum += lines.length;
 }

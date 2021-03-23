@@ -1,9 +1,9 @@
-import md5 from "../../utils/md5";
-import * as jwt from "jsonwebtoken";
-import * as boom from "boom";
-import { validationResult } from "express-validator";
-import { RESPONSE_CODE, PRIVATE_KEY, JWT_EXPIRED } from "../../utils/constant";
-import { IUser, findOneUser, saveUser } from "./userSchema";
+import md5 from '../../utils/md5';
+import * as jwt from 'jsonwebtoken';
+import * as boom from 'boom';
+import { validationResult } from 'express-validator';
+import { RESPONSE_CODE, PRIVATE_KEY, JWT_EXPIRED } from '../../utils/constant';
+import { IUser, findOneUser, saveUser } from './userSchema';
 
 // 登录
 export async function login(req: any, res: any, next: any) {
@@ -16,19 +16,20 @@ export async function login(req: any, res: any, next: any) {
     next(boom.badRequest(msg));
   } else {
     try {
-      let { username, password } = req.body;
+      const { username } = req.body;
+      let { password } = req.body;
       password = md5(password);
-      let users: Array<IUser> = await findOneUser({ username, password });
+      const users: Array<IUser> = await findOneUser({ username, password });
       if (users?.length > 0) {
         const token = jwt.sign({ username }, PRIVATE_KEY, {
           expiresIn: JWT_EXPIRED,
         });
-        let userData = {
+        const userData = {
           username: users[0].username,
         };
         res.json({
           code: RESPONSE_CODE.SUCCESS,
-          msg: "登录成功",
+          msg: '登录成功',
           data: {
             token,
             userData,
@@ -37,7 +38,7 @@ export async function login(req: any, res: any, next: any) {
       } else {
         res.json({
           code: RESPONSE_CODE.LOGIN_ERROR,
-          msg: "用户名或密码错误",
+          msg: '用户名或密码错误',
           data: null,
         });
       }
@@ -58,20 +59,21 @@ export async function register(req: any, res: any, next: any) {
     const [{ msg }] = error.errors;
     next(boom.badRequest(msg));
   } else {
-    let { username, password, confirmPassword } = req.body;
+    const { username, confirmPassword } = req.body;
+    let { password } = req.body;
     if (password !== confirmPassword) {
       res.json({
         code: RESPONSE_CODE.PASSWORK_INCONFORMITY,
-        msg: "密码与确认密码不一致",
+        msg: '密码与确认密码不一致',
         data: null,
       });
     }
     try {
-      let users: Array<IUser> = await findOneUser({ username });
+      const users: Array<IUser> = await findOneUser({ username });
       if (users?.length > 0) {
         res.json({
           code: RESPONSE_CODE.EXIST,
-          msg: "用户已存在",
+          msg: '用户已存在',
           data: null,
         });
       } else {
@@ -79,7 +81,7 @@ export async function register(req: any, res: any, next: any) {
         await saveUser({ username, password });
         res.json({
           code: RESPONSE_CODE.SUCCESS,
-          msg: "注册成功",
+          msg: '注册成功',
           data: null,
         });
       }

@@ -7,6 +7,6 @@ export const enum RESPONSE_CODE {
   PASSWORK_INCONFORMITY = 10003, // 密码与确认密码不一致
 }
 
-export const PRIVATE_KEY: string = "jackchen"; // 自定义jwt加密的私钥
+export const PRIVATE_KEY = 'jackchen'; // 自定义jwt加密的私钥
 
 export const JWT_EXPIRED: number = 60 * 60 * 1; // 过期时间24小时

@@ -1,4 +1,4 @@
-import { RESPONSE_CODE } from "../../utils/constant";
+import { RESPONSE_CODE } from '../../utils/constant';
 
 export async function getSettings(req: any, res: any, next: any) {
   res.json({

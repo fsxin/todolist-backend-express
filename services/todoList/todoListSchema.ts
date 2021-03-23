@@ -1,4 +1,4 @@
-import mongoose from "../../utils/dbConfig";
+import mongoose from '../../utils/dbConfig';
 
 const ToDoListSchema = new mongoose.Schema({
   name: {
@@ -15,7 +15,7 @@ const ToDoListSchema = new mongoose.Schema({
   updateTime: { type: Date, default: Date.now },
 });
 
-const todoListModel = mongoose.model("TodoList", ToDoListSchema, "todolist");
+const todoListModel = mongoose.model('TodoList', ToDoListSchema, 'todolist');
 
 export interface ITodoItem {
   _id?: string;
@@ -32,7 +32,7 @@ export function getAll(): Promise<ITodoItem[]> {
   return new Promise((resolve, reject) => {
     todoListModel
       .find()
-      .sort("-updateTime")
+      .sort('-updateTime')
       .exec((error: any, todoList: any) => {
         if (error) {
           reject(error);

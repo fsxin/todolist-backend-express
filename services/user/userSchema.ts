@@ -1,4 +1,4 @@
-import mongoose from "../../utils/dbConfig";
+import mongoose from '../../utils/dbConfig';
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -14,19 +14,19 @@ const UserSchema = new mongoose.Schema({
   homeTown: String,
   role: {
     type: String,
-    default: "user",
+    default: 'user',
   },
   age: Number,
   sex: {
     type: String,
-    enum: ["man", "woman"],
+    enum: ['man', 'woman'],
   },
   address: String,
   createTime: { type: Date, default: Date.now },
   updateTime: { type: Date, default: Date.now },
 });
 
-const UserModel = mongoose.model("User", UserSchema, "user");
+const UserModel = mongoose.model('User', UserSchema, 'user');
 
 export interface IUser {
   username: string;

@@ -1,10 +1,11 @@
 {
+  "files.exclude": {
+    "node_modules": false,
+    "dist": false,
+  },
   "editor.tabSize": 2,
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 }
