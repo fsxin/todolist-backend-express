@@ -40,7 +40,7 @@ export async function saveTodoList(req: any, res: any, next: any) {
     const todoItem: ITodoItem[] = await getTodoItemByName(name);
     if (todoItem?.length > 0) {
       res.json({
-        code: RESPONSE_CODE.ERROR,
+        code: RESPONSE_CODE.EXIST,
         msg: '名称重复',
         data: null,
       });
